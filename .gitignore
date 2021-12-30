@@ -1,3 +1,4 @@
 node_modules
-backend/app tuto.js
+backend/server_copy.js
+backend/models
 README.md
