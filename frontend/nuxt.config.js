@@ -9,7 +9,6 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - tutos',
     title: 'tutos',
     htmlAttrs: {
       lang: 'en'
@@ -22,6 +21,9 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      {src: "https://js.stripe.com/v3/"}
     ]
   },
 

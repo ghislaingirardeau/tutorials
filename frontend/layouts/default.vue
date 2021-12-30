@@ -62,8 +62,18 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: 'StripeAPI',
+          to: '/stripeAPI'
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'StripeJS',
+          to: '/stripeJS'
+        },
+        {
+          icon: 'mdi-chart-bubble',
+          title: 'fetch nuxt',
+          to: '/fetch'
         }
       ],
       miniVariant: false,
