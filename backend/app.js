@@ -1,20 +1,8 @@
 const express = require('express') /* IMPORTE LES PACKAGES */
-const mongoose = require('mongoose'); /* IMPORTE LES PACKAGES */
-const path = require('path'); /* Specifier un chemin pour trouver une image */
-
-
-const stuffRoutes = require('./routes/stuff'); /* IMPORTE LES ROUTEURS */
-const userRoutes = require('./routes/user');
+const stripe = require('./routes/stripe')
+/* const webhook = require('./routes/webhook') */
 
 const app = express()
-
-mongoose.connect('mongodb+srv://ghislain:qwertyuio@cluster0.d1pzv.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
-  { useNewUrlParser: true,
-    useUnifiedTopology: true})
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
-
-const bodyParser = require('body-parser');
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,17 +11,12 @@ app.use((req, res, next) => {
     next();
   });
 
-app.use(bodyParser.json());
+/* app.use('/api', webhook) */ // positionner avant express.json parce que nous voulons du express.raw CONF README
 
-/* INDIQUE LE CHEMIN LORS DU TELECHARGEMENT IMAGE */
+app.use(express.json())
 
-app.use('/images', express.static(path.join(__dirname, 'images')));
-/* Pour dire au serveur le chemin afin de trouver l'image */
+app.get('/', (req, res) => res.send('Success!!!'))
 
-/* APPLIQUE TOUTES ROUTES IMPORTEES */
+app.use('/api/stripe', stripe)
 
-app.use('/api/stuff', stuffRoutes); 
-app.use('/api/auth', userRoutes)
-
-
-module.exports = app /* EXPORTE APP DANS server.js */
+module.exports = app 
