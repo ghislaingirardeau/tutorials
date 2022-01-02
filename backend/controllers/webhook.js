@@ -1,12 +1,16 @@
 const stripe = require('stripe')(process.env.STRIPE_KEY)
 
-// webhook
+/* FUNCTION save information in the database here */
+const saveInDatabase = (dataToSave) => {
+  console.log("dataToSave", dataToSave);
+}
+
+// WEBHOOK
 exports.listen = (request, response, next) => {
-    console.log('webhook')
-    let event = request.body;
+    let event = request.body
+    // securiser le webhook ici
     const endpointSecret = process.env.STRIPE_WEBHOOK
     if (endpointSecret) {
-      // Get the signature sent by Stripe
       const signature = request.headers['stripe-signature'];
       try {
         event = stripe.webhooks.constructEvent(
@@ -19,20 +23,20 @@ exports.listen = (request, response, next) => {
         return response.sendStatus(400);
       }
     }
-    // Handle the event
+   
+    // SUIVANT LE TYPE D'EVENEMENT
     switch (event.type) {
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object;
-        console.log(`PaymentIntent for was successful!`);
-        // Then define and call a method to handle the successful payment intent.
-        // handlePaymentIntentSucceeded(paymentIntent);
+        console.log(`PaymentIntent for was successful!`)
+        saveInDatabase(event.data.object)
         break;
+
       case 'payment_method.attached':
         const paymentMethod = event.data.object;
         console.log(`PaymentIntent is attached!`);
-        // Then define and call a method to handle the successful attachment of a PaymentMethod.
-        // handlePaymentMethodAttached(paymentMethod);
         break;
+
       default:
         // Unexpected event type
         console.log(`Unhandled event type ${event.type}.`);

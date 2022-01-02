@@ -1,29 +1,43 @@
 <template>
-    <div>
-        <h3>{{data.data}}</h3>
-
-        <!-- PAIEMENT COTE SERVER DEPUIS API, RECUP DATA FRONT 
-        ENVOIE TOUTES LES DONNEES PAIEMENT ET USER COTE SERVEUR
-        UNE FOIS LE PAIEMENT REALISE, ENREGISTRE USER ET DATA DANS BASE DE DONNÉE
-        PUSH ROUTER SUR CONFIRMATION AVEC ID DU DON ET LE RECU DE PAIEMENT
-        INCONVENIENT = CARTE AVEC AUTHENTIFICATION -- A VALIDER COTÉ FRONT, donnee carte envoye directement au serveur
-        https://stripe.com/docs/payments/accept-a-payment-synchronously
-        -->
-
+  <div class="page-wrapper">
+    <div class="article-cards-wrapper">
+        <template v-if="$fetchState.pending">
+        <h1>Loading...</h1>
+        </template>
+        <template v-else>
+        <article-card-block
+            v-for="article in articles"
+            :key="article.id"
+            :article="article"
+            class="article-card-block"
+        />
+        </template>
     </div>
+  </div>
 </template>
 
 <script>
-export default {
+  import ArticleCardBlock from '@/components/ArticleCardBlock'
+
+  export default {
+    components: {
+      ArticleCardBlock
+    },
     data() {
-        return{
-            data: '',
-        }
+      return {
+        currentPage: 1,
+        articles: []
+      }
+    },
+    mounted() {
+            console.log(this.$fetchState)
     },
     async fetch() {
-        this.data = await this.$axios.$get('https://reqres.in/api/products')
-    },
-    methods: {
+      const articles = await fetch(
+        `https://dev.to/api/articles?tag=nuxt&state=rising&page=${this.currentPage}`
+      ).then(res => res.json())
+
+      this.articles = this.articles.concat(articles)
     }
-}
+  }
 </script>
