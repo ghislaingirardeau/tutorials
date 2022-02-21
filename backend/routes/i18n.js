@@ -4,6 +4,6 @@ const language = require('../middleware/language')
 
 const router = express.Router()
 
-router.get('/', language, i18n.getDatas)
+router.post('/', i18n.getDatas)
 
 module.exports = router

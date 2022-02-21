@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+import i18n from './config/i18n'
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
@@ -11,7 +12,7 @@ export default {
   head: {
     title: 'tutos',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'en, fr'
     },
     meta: [
       { charset: 'utf-8' },
@@ -48,7 +49,19 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/i18n'
   ],
+
+  i18n: {
+  seo: false,
+  locales: [
+    { code: 'en', iso: 'en-US', file: 'en.js' },
+    { code: 'fr', iso: 'fr-FR', file: 'fr.js' },
+  ],
+  baseUrl: 'https://ghislain-girardeau-portfolio.netlify.app',
+  defaultLocale: 'en',
+  vueI18n: i18n
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
@@ -60,7 +73,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
