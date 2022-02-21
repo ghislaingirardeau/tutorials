@@ -24,6 +24,7 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
+
     <v-app-bar
       :clipped-left="clipped"
       fixed
@@ -31,10 +32,20 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
 
+      <v-spacer></v-spacer>
+
+      <v-toolbar-title>{{$t('layout.webTitle')}}</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn @click="routeCart"><v-icon>mdi-cart</v-icon></v-btn>
+
+      <v-btn @click="switchLanguage('fr')">fr</v-btn>
+      <v-btn @click="switchLanguage('en')">en</v-btn>
     </v-app-bar>
     <v-main>
       <v-container>
-        <Nuxt-child :browserLanguage="browserLanguage" keep-alive />
+        <Nuxt-child :browserLanguage="browserLanguage" :serverDatas="serverDatas" keep-alive />
       </v-container>
     </v-main>
 
@@ -62,42 +73,48 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'StripeAPI',
-          to: '/stripeAPI'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'StripeJS',
-          to: '/stripeJS'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'fetch nuxt',
-          to: '/fetch'
-        }
-      ],
       miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      browserLanguage: 'en'
+      browserLanguage: 'en',
+      serverDatas: undefined,
     }
   },
   methods: {
+    routeCart() {
+      this.$router.push(`/_${this.browserLanguage}/carts`)
+    },
+    async switchLanguage(lang) {
+      this.browserLanguage = lang
+      this.$i18n.locale = lang
 
+      const body = {
+        lang: lang
+      }
+      await this.$axios.$post('http://localhost:8000/api/i18n', JSON.stringify(body), {
+          headers: {
+          "content-type": "application/json",
+          },
+      })
+      .then(response => {
+          this.serverDatas = response
+      })  
+    }
   },
   created () {
     this.browserLanguage = navigator.language.slice(0, 2)
-    this.$i18n.setLocale(this.browserLanguage)
+    this.$i18n.locale = this.browserLanguage
   },
-  mounted() {
+  async mounted() {
+    const body = {
+      lang: this.browserLanguage
+    }
+    await this.$axios.$post('http://localhost:8000/api/i18n', JSON.stringify(body), {
+        headers: {
+        "content-type": "application/json",
+        },
+    })
+    .then(response => {
+        this.serverDatas = response
+    })  
   },
 }
 </script>
