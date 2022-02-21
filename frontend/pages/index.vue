@@ -25,7 +25,7 @@
 
     <v-col cols="12" v-if="serverDatas">
       <h2>
-        content : {{serverDatas.message}}
+        {{serverDatas}}
       </h2>
     </v-col>
     <v-overlay v-else :value="overlay" :absolute="true" >
