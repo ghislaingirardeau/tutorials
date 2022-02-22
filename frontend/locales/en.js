@@ -5,7 +5,12 @@ export default {
   index: {
     h1: 'All products list',
     search: 'Search',
-    category: 'Category'
+    category: 'Category',
+    currency: "$",
+    cardMore: "Learn more",
+    cardCart: "Add cart",
+    cardTitle: "Origin",
+    cardClose: "Close"
   },
   navBar: [
       {
