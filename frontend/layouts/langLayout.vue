@@ -22,6 +22,9 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
+                  <v-btn @click="switchLanguage('fr')">fr</v-btn>
+          <v-btn @click="switchLanguage('en')">en</v-btn>
+
       </v-list>
     </v-navigation-drawer>
 
@@ -30,18 +33,18 @@
       fixed
       app
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+      <v-row align="center">
+        <v-col cols="2">
+          <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+        </v-col>
+        <v-col cols="7">
+          <v-toolbar-title>{{$t('layout.webTitle')}}</v-toolbar-title>
+        </v-col>
+        <v-col cols="2">
+          <v-btn @click="routeCart"><v-icon>mdi-cart</v-icon></v-btn>
+        </v-col>
+      </v-row>
 
-      <v-spacer></v-spacer>
-
-      <v-toolbar-title>{{$t('layout.webTitle')}}</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn @click="routeCart"><v-icon>mdi-cart</v-icon></v-btn>
-
-      <v-btn @click="switchLanguage('fr')">fr</v-btn>
-      <v-btn @click="switchLanguage('en')">en</v-btn>
     </v-app-bar>
     <v-main>
       <v-container>
