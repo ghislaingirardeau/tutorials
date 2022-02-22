@@ -41,7 +41,16 @@
           <v-toolbar-title>{{$t('layout.webTitle')}}</v-toolbar-title>
         </v-col>
         <v-col cols="2">
-          <v-btn @click="routeCart"><v-icon>mdi-cart</v-icon></v-btn>
+          <v-btn @click="routeCart">
+        <v-badge
+          color="blue"
+          :content="cartArticles"
+          :value="cartArticles"
+          left
+        >
+          <v-icon>mdi-cart</v-icon>
+        </v-badge>
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -78,6 +87,7 @@ export default {
       fixed: false,
       browserLanguage: 'en',
       serverDatas: undefined,
+      cartArticles: 0
     }
   },
   methods: {
@@ -104,6 +114,17 @@ export default {
   created () {
     this.browserLanguage = navigator.language.slice(0, 2)
     this.$i18n.locale = this.browserLanguage
+
+    try {
+      let cartTotal = JSON.parse(localStorage.getItem('Ecommerce')).cart
+      this.cartArticles = cartTotal.length
+    } catch (error) {
+      console.log(error)
+    }
+
+    this.$nuxt.$on('add-cart', (playload) => {
+      this.cartArticles = playload.total
+    })
   },
   async mounted() {
     const body = {

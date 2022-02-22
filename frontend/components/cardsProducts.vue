@@ -105,15 +105,21 @@
                 return amount.concat(",", centimes)
             },
             addToCart(id) {
-                let cartSaved = JSON.parse(localStorage.getItem('Ecommerce'))
-                if(cartSaved) {
-                    cartSaved.cart.push(id)
-                    localStorage.setItem('Ecommerce', JSON.stringify(cartSaved))
+                let cartArticles = JSON.parse(localStorage.getItem('Ecommerce'))
+                let totalArticles
+                if(cartArticles) {
+                    totalArticles = cartArticles.cart.length + 1
+                    cartArticles.cart.push(id)
+                    localStorage.setItem('Ecommerce', JSON.stringify(cartArticles))
                     
                 } else {
+                    totalArticles = 1
                     let cart = {cart: [id]}
                     localStorage.setItem('Ecommerce', JSON.stringify(cart))
                 }
+                this.$nuxt.$emit('add-cart', {
+                    total: totalArticles
+                })
             }
         },
     }
