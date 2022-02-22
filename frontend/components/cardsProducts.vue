@@ -12,20 +12,17 @@
             ></v-img>
             <v-card-title primary-title>
               {{item.name}}
-              <v-spacer></v-spacer>
-              <v-btn
-                color="primary"
-                elevation="2"
-              >{{price(item.price)}} {{$t('index.currency')}}
-              </v-btn>
             </v-card-title>
             <v-card-subtitle>
               {{item.category}}
+              <span class="price">
+                  {{price(item.price)}} {{$t('index.currency')}}
+              </span>
             </v-card-subtitle>
             <v-card-text>
-              <p class="text--primary">
+              <span class="text--primary">
                 {{item.description}}
-              </p>
+              </span>
             </v-card-text>
             <v-card-actions>
               <v-btn
@@ -126,5 +123,7 @@
 </script>
 
 <style lang="scss" scoped>
-
+.price{
+    float: right;
+}
 </style>
