@@ -25,7 +25,7 @@
     </v-col>  
 
     <cardsProducts v-if="listProducts" :listProducts="listProducts"/>
-    
+
     <skeletonCardsProducts v-else />
 
   </v-row>
@@ -64,7 +64,6 @@ export default {
       setTimeout(() => {
         this.listProducts = this.serverDatas
       }, 2000);
-
     }
   },
   methods: {

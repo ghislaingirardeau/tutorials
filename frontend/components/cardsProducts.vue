@@ -16,7 +16,7 @@
               <v-btn
                 color="primary"
                 elevation="2"
-              >{{item.price}} {{$t('index.currency')}}
+              >{{price(item.price)}} {{$t('index.currency')}}
               </v-btn>
             </v-card-title>
             <v-card-subtitle>
@@ -91,10 +91,18 @@
         props: {
             listProducts: Array
         },
+        computed: {
+        },
         methods: {
             showOrigin(id) {
             this.revealCard = 'origin' + id
             },
+            price(el) {
+                let length = el.length - 2
+                let centimes = el.slice(length)
+                let amount = el.slice(0, length)
+                return amount.concat(",", centimes)
+            }
         },
     }
 </script>
