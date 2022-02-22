@@ -2,9 +2,8 @@
   <v-app >
     <v-navigation-drawer
       v-model="drawer"
-      :mini-variant="miniVariant"
       :clipped="clipped"
-      fixed
+      temporary
       app
     >
       <v-list>
@@ -22,8 +21,9 @@
             <v-list-item-title v-text="item.title" />
           </v-list-item-content>
         </v-list-item>
-                  <v-btn @click="switchLanguage('fr')">fr</v-btn>
-          <v-btn @click="switchLanguage('en')">en</v-btn>
+          
+        <v-btn @click="switchLanguage('fr')">fr</v-btn>
+        <v-btn @click="switchLanguage('en')">en</v-btn>
 
       </v-list>
     </v-navigation-drawer>
@@ -76,7 +76,6 @@ export default {
       clipped: false,
       drawer: false,
       fixed: false,
-      miniVariant: false,
       browserLanguage: 'en',
       serverDatas: undefined,
     }

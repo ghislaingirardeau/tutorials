@@ -1,7 +1,7 @@
 const en = 
     [
     {
-        id:12,
+        id:1,
         name: "Bracelet-1",
         category: "accessory",
         description: "I'm a product detail. I'm a great place to add more information.",
@@ -28,8 +28,8 @@ const en =
         },
     {
         id:123,
-        name: "Bracelet-3",
-        category: "accessory",
+        name: "Jasmine",
+        category: "encense",
         description: "I'm a product detail. I'm a great place to add more information.",
         communityId: 2,
         community: "here from which community it come from",
@@ -71,8 +71,8 @@ const fr =
         },
     {
         id:123,
-        name: "Bracelet-3",
-        category: "accessoire",
+        name: "Jasmine",
+        category: "encense",
         description: "Je suis la description du produit",
         communityId: 2,
         community: "Description du village ou de la personne qui fabrique le produit",
