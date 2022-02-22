@@ -33,20 +33,19 @@
       fixed
       app
     >
-      <v-row align="center">
+      <v-row align="center" justify="space-between">
         <v-col cols="2">
           <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </v-col>
         <v-col cols="7">
           <v-toolbar-title>{{$t('layout.webTitle')}}</v-toolbar-title>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="3" class="text-sm-center">
           <v-btn @click="routeCart">
         <v-badge
           color="blue"
           :content="cartArticles"
           :value="cartArticles"
-          left
         >
           <v-icon>mdi-cart</v-icon>
         </v-badge>
