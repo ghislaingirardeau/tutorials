@@ -58,7 +58,7 @@ export default {
     { code: 'en', iso: 'en-US', file: 'en.js' },
     { code: 'fr', iso: 'fr-FR', file: 'fr.js' },
   ],
-  baseUrl: 'https://ghislain-girardeau-portfolio.netlify.app',
+  baseUrl: '',
   defaultLocale: 'en',
   vueI18n: i18n
   },
