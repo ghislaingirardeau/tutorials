@@ -77,32 +77,6 @@ exports.newCustomer = async (req, res, next) => {
 
 /* POUR UN PAIEMENT COTE API */
 
-exports.paymentAPI = async (req, res, next) => {
-    try {
-        const paymentMethod = await stripe.paymentMethods.create({
-          type: 'card',
-          card: req.body.payment,
-          billing_details: {
-            name: req.body.user.name,
-          }
-        })
-        
-        const paymentCreate = await stripe.paymentIntents.create({
-          amount: req.body.user.amount * 100,
-          currency: 'eur',
-          payment_method: paymentMethod.id,
-        })
-        
-        const paymentConfirm = await stripe.paymentIntents.confirm(
-          paymentCreate.id,
-          {payment_method: paymentMethod.id}
-        )
-        res.status(200).json(paymentConfirm)
-    } catch(e) {
-      console.log(e.raw.message)
-        res.status(404).json({messageCode: e.raw.message})
-    }
-}
 
 exports.retrievePayment = async (req, res, next) => {
   const paymentIntent = await stripe.paymentIntents.retrieve(

@@ -37,7 +37,6 @@ export default {
                 switch (result.paymentIntent.status) {
                     case 'succeeded':
                     this.messagePayment = 'Success! Payment received.'
-                    // LE PAIEMENT EST VALIDE, JE RECUPERE LES DATAS DU DONS LIE AU PAIEMENT
                     const paymentIntent = new URLSearchParams(window.location.search).get(
                         'payment_intent'
                     );

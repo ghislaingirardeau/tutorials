@@ -1,18 +1,17 @@
 <template>
-    <div>
-
-        <!-- GENERER JUSTE LE PAIEMENT PAR CARTE -->
         <v-row class="my-5">
+            <v-col cols='10'>
+                <h2>online frontend payment</h2>
+            </v-col>
             <v-col cols='10'>
                 <label>Card
                     <div class="my-input" id="card-element"></div>
                 </label>
             </v-col>
-
-            <v-btn color="primary" outlined @click="submitCardOnly">submit</v-btn>
+            <v-col cols='10'>
+                <v-btn color="primary" outlined @click="submitCardOnly">submit</v-btn>
+            </v-col>
         </v-row>
-
-    </div>
 </template>
 
 <script>

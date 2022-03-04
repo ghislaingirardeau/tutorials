@@ -1,7 +1,7 @@
 <template>
     <v-row class="my-5">
         <v-col cols="10">
-            <h2>Payment finalize server side</h2>
+            <h2>Payment finalize server side / element build on frontend / save database on succeed</h2>
         </v-col>
         <v-col cols="10" >
             <form id='payment-form'> <!-- https://stripe.com/docs/payments/accept-a-payment-synchronously -->
@@ -9,7 +9,7 @@
                     Card details
                     <div id="card-element-test" class="my-5"></div>
                 </label>
-                <v-btn color="primary" @click="onlinePayment">onlinepayment</v-btn>
+                <v-btn color="primary" @click="onlinePayment">online payment</v-btn>
             </form>    
         </v-col>
     </v-row>

@@ -1,9 +1,13 @@
 <template>
-    <div>
-        <!-- EXEMPLE POUR UN SITE E-COMMERCE AVE BOUTON DE REDIRECTION -->
-        <v-btn @click="redirect" color="primary">Checkout</v-btn>
+        <v-row class="my-5">
+            <v-col cols='10'>
+                <h2>Payment sur la page produit Stripe</h2>
+            </v-col>
+            <v-col cols='10'>
+                <v-btn @click="redirect" color="primary">Checkout</v-btn>
+            </v-col>
+        </v-row>
 
-    </div>
 </template>
 
 <script>

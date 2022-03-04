@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Online payment tutorial</h1>
+        <h1>Payment stripe backend</h1>
         
         <onlinePayment />
         
@@ -22,32 +22,23 @@
             </v-col>
         </v-row>
 
-        <v-row class="my-5"> 
-            <v-col cols='10'>
-                <p>Paiement en envoyant les données de la carte bancaire</p>
-            </v-col>
-            <!-- PAIEMENT COTE SERVER DEPUIS API, RECUP DATA FRONT 
-            ENVOIE TOUTES LES DONNEES PAIEMENT ET USER COTE SERVEUR
-            UNE FOIS LE PAIEMENT REALISE, ENREGISTRE USER ET DATA DANS BASE DE DONNÉE
-            PUSH ROUTER SUR CONFIRMATION AVEC ID DU DON ET LE RECU DE PAIEMENT
-            INCONVENIENT = CARTE AVEC AUTHENTIFICATION -- A VALIDER COTÉ FRONT, donnee carte envoye directement au serveur
-            https://stripe.com/docs/payments/accept-a-payment-synchronously
-            -->
-            <v-col cols='10'>
-                <v-btn @click="submitAPI" color="primary">Paiement API</v-btn>
-            </v-col>
-        </v-row>
-
         <v-row class="my-5">
-            <p>Affiche le paiement sous le format stripe</p>
             <v-col cols='10'>
-                <v-btn color='accent' @click="showPaymentElement">Afficher le paiement</v-btn>
+                <h2>Show payment element</h2>
+            </v-col>
+            <v-col cols='10'>
+                <p>possibilité de personnaliser les boutons payer et annuler</p>
+                <p>inconvenient = recup des données à enregistrer sur la page success ??</p>
+            </v-col>
+
+            <v-col cols='10'>
+                <v-btn color='primary' @click="showPaymentElement">Afficher le paiement</v-btn>
             </v-col>
             <v-col cols='10' v-show="paymentIntentId">
                 <v-col cols='10' id="payment-element">
                 </v-col>
-                <v-btn color='accent' id="submit" @click="payment">Payer</v-btn>
-                <v-btn color='accent' id="submit" @click="cancelPayment">Annuler</v-btn>
+                <v-btn color='success' id="submit" @click="paymentConfirm">Payer</v-btn>
+                <v-btn color='warning' id="submit" @click="cancelPayment">Annuler</v-btn>
             </v-col>
             <!-- Je rentre les données pour valider le paiement -->
         </v-row>
@@ -97,38 +88,6 @@ export default {
         },
 
         // PAYMENT WITHOUT STRIPE FORM = pas de controle, ni authentification carte
-        async submitAPI() {
-            let data = {
-                user: {
-                    amount: 89, 
-                    name: '32567',
-                },
-                payment: {
-                    number: '4111 1111 1111 1111',
-                    exp_month: 12,
-                    exp_year: 2022,
-                    cvc: '314',
-                },
-            }
-            
-            await this.$axios.$post('http://localhost:8000/api/stripe/v1/payment_methods', JSON.stringify(data), {
-                headers: {
-                "content-type": "application/json",
-                },
-            })
-            .then(response => {
-                console.log(response)
-                /* if(response.status === 'succeeded') {
-                    this.$router.push({ name: 'confirmation-id', params: {id: data.user.id, client_secret: response.client_secret}})
-                } else {
-                    alert("Le paiement n'a pas fonctionné")
-                } */
-            })
-            .catch(error => {
-                alert(error.response.data.messageCode)
-            })
-        },
-
         // PAYMENT WITH STRIPE FORM AND CONTROL
         async showPaymentElement() {
             const stripeKey = await this.$axios.$get('http://localhost:8000/api/stripe/stripeKey')
@@ -142,7 +101,6 @@ export default {
             })
             .then(response => {
             // recupere une clé secrete propre a la transaction !! le paiement n'est pas validé ici
-            console.log(response)
                 this.paymentIntentId = response.id
                 const appearance = {
                     theme: 'night',
@@ -153,7 +111,7 @@ export default {
                 paymentElement.mount("#payment-element")
             })
         },
-        async payment() {
+        async paymentConfirm() {
             const billingDetails = {
                 name: 'joe',
                 email: 'joe2@mail.com',

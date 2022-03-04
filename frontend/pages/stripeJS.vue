@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <h1>Payment stripe coté frontend</h1>
         <checkoutOnStripe />
 
         <cardPayment />
