@@ -1,8 +1,12 @@
 <template>
     <div>
+        <h1>Online payment tutorial</h1>
+        
+        <onlinePayment />
+        
         <v-row class="my-5">
             <v-col cols='10'>
-                <p>Show my balance account on stripe</p>
+                <h2>Show my balance account on stripe</h2>
             </v-col>
             <v-col cols='10'>
                 <v-btn color="primary" @click="stripeBalance">Show Balance</v-btn>
@@ -11,7 +15,7 @@
 
         <v-row class="my-5">
             <v-col cols='10'>
-                <p>Create a new customer</p>
+                <h2>Create a new customer</h2>
             </v-col>
             <v-col cols='10'>
                 <v-btn color="primary" @click="newCustomer">New customer</v-btn>
@@ -20,7 +24,7 @@
 
         <v-row class="my-5"> 
             <v-col cols='10'>
-                <p>Paiement en envoyant les données de la carte bancaire,  FORM CONSTRUIRE</p>
+                <p>Paiement en envoyant les données de la carte bancaire</p>
             </v-col>
             <!-- PAIEMENT COTE SERVER DEPUIS API, RECUP DATA FRONT 
             ENVOIE TOUTES LES DONNEES PAIEMENT ET USER COTE SERVEUR
@@ -52,6 +56,8 @@
 </template>
 
 <script>
+import onlinePayment from '@/components/onlinePayment.vue';
+
 export default {
     data() {
         return{
@@ -65,6 +71,9 @@ export default {
                 qrcode: '01638183481794JEDU'
             },
         }
+    },
+    components: {
+        onlinePayment,
     },
     methods: {
         async stripeBalance() {

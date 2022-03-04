@@ -8,6 +8,10 @@ router.get('/stripeKey', stripe.keyPublic)
 
 /* STRIPE API FRONT */
 
+// ONLINEPAYMENT TUTO
+
+router.post('/pay', stripe.onlinePayment)
+
 // BALANCE ON STRPIE
 router.get('/v1/balance', stripe.mybalance)
 
