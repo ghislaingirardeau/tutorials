@@ -1,4 +1,5 @@
-const stripe = require('stripe')(process.env.STRIPE_KEY)
+const stripe = require('stripe')(process.env.STRIPE_KEY, {maxNetworkRetries: 2})
+const uuid = require('uuid') // generate a random key
 
 // information sur le store (ex si site e-commerce), info qui peuvent venir de la base de donnée par exemple
 // Important: le prix vient de la base de donnée ou coté serveur et non coté client
@@ -44,10 +45,10 @@ exports.onlinePayment = async (req, res, next) => {
         currency: 'usd',
         confirmation_method: 'manual',
         confirm: true
-      });
+      }, { idempotencyKey: uuid.v4() });
     } else if (req.body.payment_intent_id) {
       intent = await stripe.paymentIntents.confirm(
-        req.body.payment_intent_id
+        req.body.payment_intent_id, { idempotencyKey: uuid.v4() }
       );
     }
     // Send the response to the client
@@ -71,7 +72,7 @@ exports.newCustomer = async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     description: req.body.description,
-  })
+  }, { idempotencyKey: uuid.v4() })
   res.status(200).json(customer)
 }
 
@@ -99,7 +100,7 @@ exports.paymentIntent = async (req, res, next) => {
             },
           });
         console.log(paymentIntent)
-        res.status(200).json({clientSecret: paymentIntent.client_secret, id: paymentIntent.id})
+      res.status(200).json({ clientSecret: paymentIntent.client_secret, id: paymentIntent.id})
     } catch(e) {
         res.status(500).json(e)
         console.log(e)
