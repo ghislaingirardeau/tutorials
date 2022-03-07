@@ -87,23 +87,23 @@ exports.retrievePayment = async (req, res, next) => {
 }
 
 exports.paymentIntent = async (req, res, next) => {
-  const amount = req.body.amount * 100
+  const {amount, currency, methods} = req.body
+  
     try {
       // paymentIntent = say to stripe you try to make a payment and start to record
       // don't charge the card until is done 
       // paymentIntent => client secret to front => checkout with client sercret (protect from cut connection)
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount,
-            currency: 'eur',
-            automatic_payment_methods: {
-              enabled: true,
-            },
+          currency: currency,
+          automatic_payment_methods: [methods],
           });
-        console.log(paymentIntent)
       res.status(200).json({ clientSecret: paymentIntent.client_secret, id: paymentIntent.id})
     } catch(e) {
-        res.status(500).json(e)
-        console.log(e)
+      res.status(400).json({error: {
+          message: e.message
+        }})
+      console.log(e.message)
     }
 }
 

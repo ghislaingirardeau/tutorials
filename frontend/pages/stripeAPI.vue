@@ -55,11 +55,8 @@ export default {
             paymentIntentId: undefined,
            donation: {
                 amount: 211, 
-                donator: 'ghislain',
-                association: 'care',
-                voucher: [{name: 'geres', id: '123', amount: '234'}, {name: 'fap', id: '12233', amount: '34'}],
-                tax_gain: '23',
-                qrcode: '01638183481794JEDU'
+                currency: 'eur',
+                paymentMethod: 'card'
             },
         }
     },
