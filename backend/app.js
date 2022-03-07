@@ -13,7 +13,7 @@ app.use((req, res, next) => {
     next();
   });
 
-app.use('/api', webhook) // positionner avant express.json parce que nous voulons du express.raw CONF README
+app.use('/webhook', webhook) // positionner avant express.json parce que nous voulons du express.raw CONF README
 
 app.use(express.json())
 
