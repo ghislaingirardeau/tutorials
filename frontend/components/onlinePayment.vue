@@ -34,11 +34,15 @@
                         response.payment_intent_client_secret
                         ).then(handleStripeJsResult);
                     } else {
-                        // Show success message
                         // SUCCESS HERE
-                        // SEND SAVE DATA TO BACKEND AFTER THE PAYMENT
-                        // ROUTE TO SUCCESS OR CONFIRMATION PAGE
-                        console.log(response);
+                        // SAVE DATA IN DB
+                        // SEND DATA AS PARAMS URL TO SHOW CONFIRM PAGE WITH DATAS SUMMARIES
+                        // QUERY PAYMENT INTENT TO CONFIRM PAYMENT
+                        const datas = {
+                            test: ['12', 'sdybvyudb'],
+                            name: 'alan'
+                        }
+                        this.$router.push({ name: 'success', params: {data: datas}, query: { payment_intent_client_secret: response.payment_intent_client_secret } })
                     }
                 }    
                 const handleStripeJsResult = async (result) => {
@@ -88,6 +92,10 @@
                     name: 'Jenny Rosen',
                     },
                 }).then(stripePaymentMethodHandler);  
+
+                this.stripe.createToken(this.cardElement).then(function(result) {
+                 console.log(result);
+                });
                 
             }
         },

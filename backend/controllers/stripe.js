@@ -26,7 +26,8 @@ exports.onlinePayment = async (req, res, next) => {
       // The payment didn’t need any additional actions and completed!
       // Handle post-payment fulfillment
       return {
-        success: true
+        success: true,
+        payment_intent_client_secret: intent.client_secret
       };
     } else {
       // Invalid status

@@ -2,6 +2,7 @@
     <div>
         <h1>Votre confirmation</h1>
         <p>{{messagePayment}}</p>
+        {{this.$route.params.data}}
     </div>
 </template>
 
