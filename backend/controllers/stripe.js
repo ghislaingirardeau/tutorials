@@ -77,6 +77,14 @@ exports.newCustomer = async (req, res, next) => {
   res.status(200).json(customer)
 }
 
+exports.tokenElement = async (req, res, next) => {
+  const token = await stripe.tokens.retrieve(
+    req.body.token.id
+  );
+  res.status(200).json(token)
+}
+
+
 /* POUR UN PAIEMENT COTE API */
 
 
@@ -109,8 +117,6 @@ exports.paymentIntent = async (req, res, next) => {
 }
 
 exports.cancelIntent = async (req, res, next) => {
-  console.log(req.params.id)
-  console.log(req.body)
     try {
       if(req.body.id === req.params.id) {
         const paymentIntent = await stripe.paymentIntents.cancel(

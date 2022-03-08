@@ -10,6 +10,7 @@
                     <div id="card-element-test" class="my-5"></div>
                 </label>
                 <v-btn color="primary" @click="onlinePayment">online payment</v-btn>
+                <v-btn color="primary" @click="testToken">token</v-btn>
             </form>    
         </v-col>
     </v-row>
@@ -91,12 +92,23 @@
                     // Include any additional collected billing details.
                     name: 'Jenny Rosen',
                     },
-                }).then(stripePaymentMethodHandler);  
-
-                this.stripe.createToken(this.cardElement).then(function(result) {
+                }).then(stripePaymentMethodHandler);                  
+            },
+            async testToken() {
+                let token
+                await this.stripe.createToken(this.cardElement).then((result) => {
                  console.log(result);
+                 token = result
                 });
-                
+                console.log(token);
+                await this.$axios.$post('http://localhost:8000/api/stripe/token', JSON.stringify(token), {
+                    headers: {
+                    "content-type": "application/json",
+                    },
+                })
+                .then((result) => {
+                    console.log(result);
+                });
             }
         },
         async mounted () {

@@ -18,6 +18,10 @@ router.get('/v1/balance', stripe.mybalance)
 // CREATE CUSTOMER
 router.post('/v1/customers', stripe.newCustomer)
 
+// TOKEN ELEMENT
+router.post('/token', stripe.tokenElement)
+
+
 /* ------------- */
 
 /* CHECKOUT PAYMENT */
