@@ -110,6 +110,7 @@ export default {
         },
         async paymentConfirm() {
             const billingDetails = {
+                id: 1234456,
                 name: 'joe',
                 email: 'joe2@mail.com',
                 address: {
@@ -120,7 +121,7 @@ export default {
             const {error} = await this.stripe.confirmPayment({
                 elements: this.elements,
                 confirmParams: {
-                    return_url: `http://localhost:3000/success`,
+                    return_url: `http://localhost:3000/confirm/${billingDetails.id}`,
                 },
                 billing_details: billingDetails,
             })
