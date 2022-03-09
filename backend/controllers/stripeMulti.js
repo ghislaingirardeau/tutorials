@@ -7,7 +7,7 @@ exports.newAccount = async (req, res, next) => {
         })
         const accountLink = await stripe.accountLinks.create({
             account: account.id,
-            refresh_url: 'http://localhost:3000/reauth',
+            refresh_url: 'http://localhost:3000/stripeAPI',
             return_url: 'http://localhost:3000/stripeAPI',
             type: 'account_onboarding',
         });
@@ -17,7 +17,13 @@ exports.newAccount = async (req, res, next) => {
       res.status(400).json(e)
     }
 }
-
+// transfer possible via payment element add:
+// /stripe.paymentIntents.create
+/* application_fee_amount: 123,
+  transfer_data: {
+  destination: '{{CONNECTED_ACCOUNT_ID}}',
+  }, */
+// payment via checkout
 exports.checkoutPayment = async (req, res, next) => {
     try {
         const session = await stripe.checkout.sessions.create({
@@ -29,10 +35,10 @@ exports.checkoutPayment = async (req, res, next) => {
             success_url: `http://localhost:3000/success`,
             cancel_url: `http://localhost:3000/cancel`,
             payment_intent_data: {
-              application_fee_amount: 200 * req.body.totalQuantity, // specifies the amount your platform plans to take from the transaction.
+              /* application_fee_amount: 200 * req.body.totalQuantity, // specifies the amount your platform plans to take from the transaction.
               transfer_data: {
                 destination: 'acct_1KbLSDQigQ19mWP1', //id of the account you want to send the money
-              },
+              }, */
             },
         })
         res.status(200).json(session)

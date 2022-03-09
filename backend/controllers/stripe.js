@@ -45,7 +45,7 @@ exports.onlinePayment = async (req, res, next) => {
         amount: 1099,
         currency: 'usd',
         confirmation_method: 'manual',
-        confirm: true
+        confirm: true,
       }, { idempotencyKey: uuid.v4() });
     } else if (req.body.payment_intent_id) {
       intent = await stripe.paymentIntents.confirm(
