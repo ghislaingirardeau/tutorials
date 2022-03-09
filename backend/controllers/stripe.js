@@ -131,20 +131,35 @@ exports.cancelIntent = async (req, res, next) => {
 }
 
 exports.checkout = async (req, res, next) => {
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-        price: 'price_1JzHPNHasS9LTq87EHGSvl3k',
-        quantity: 1,
-      },
-    ],
-    mode: 'payment',
-    success_url: `http://localhost:3000/success`,
-    cancel_url: `http://localhost:3000/cancel`,
-    metadata: {
-      'voucher' : req.body.don
-    }
-  });
-  res.status(200).json({"url":session.url})
+  try {
+    const session = await stripe.checkout.sessions.create({
+      customer: req.body.customer,
+      client_reference_id: req.body.transaction,
+      line_items: req.body.cart,
+      /* shipping_address_collection: {
+        allowed_countries: ['FR', 'GB'],
+      }, */
+      mode: 'payment',
+      shipping_options: [{
+        shipping_rate: 'shr_1KLkrVHasS9LTq87pupkFYA4'
+      }],
+      success_url: `http://localhost:3000/confirm/${req.body.transaction}`,
+      cancel_url: `http://localhost:3000/cancel`,
+    });
+    //facultatif à supprimer
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      session.payment_intent
+    );
+    console.log(paymentIntent.client_secret);
+    /* --------------------- */
+
+    res.status(200).json({ "url": session.url })
+  } catch (error) {
+    res.status(400).json({
+      error: {
+        message: error.raw.message
+      }
+    })
+    console.log(error.raw.message);
+  }
 }

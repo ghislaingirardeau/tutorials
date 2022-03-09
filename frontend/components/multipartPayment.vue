@@ -5,9 +5,11 @@
                 <h2>Multipart payement</h2>
             </v-col>
             <v-col cols='10'>
-                <h3>Créer un nouveau compte qui va recevoir l'argent</h3>
+                <p>Créer un nouveau compte qui va recevoir l'argent</p>
                 <p>Par exemple l'association qui va recevoir l'argent. Une asso = un compte</p>
-                <v-btn color="primary" @click="newAccount">New account</v-btn>
+                <p>créer le compte associé puis renvoie un lien stripe pour configurer le compte</p>
+                <p>une fois le compte configurer, je peux envoyer le paiement vers ce compte via account id</p>
+                <v-btn color="primary" @click="newAccount">New account and link</v-btn>
             </v-col>
 
             <v-col cols='10'>
@@ -28,8 +30,8 @@ export default {
     methods: {
         async newAccount() {
             let accountData = {
-                type: 'express',
-                email: "care@mail.com",
+                type: 'standard',
+                email: "ghislain.girardeau@neuf.fr",
             }
             await this.$axios.$post('http://localhost:8000/api/stripe/multipart/newAccount', JSON.stringify(accountData), {
                 headers: {
@@ -37,13 +39,14 @@ export default {
                 },
             })
             .then(response => {
-                console.log(response)
+                window.location = response.url 
             })
         },
         async checkoutPayment() {
             let post = {
-                amount: 'price_1JzHPNHasS9LTq87EHGSvl3k',
+                amount: 'price_1KbK6THasS9LTq87yhlXhuZv',
                 don: 'toto',
+                totalQuantity: 5
             }
             await this.$axios.$post('http://localhost:8000/api/stripe/multipart/create-checkout-session', JSON.stringify(post), {
                 headers: {
@@ -52,7 +55,7 @@ export default {
             })
             .then(response => {
                 console.log(response)
-                /* window.location = response.url */
+                window.location = response.url
             })
         }
     }
