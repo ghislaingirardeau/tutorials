@@ -72,6 +72,11 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
+          title: 'IndexedDB',
+          to: '/indexeddb'
+        },
+        {
+          icon: 'mdi-chart-bubble',
           title: 'fetch nuxt',
           to: '/fetch'
         }
