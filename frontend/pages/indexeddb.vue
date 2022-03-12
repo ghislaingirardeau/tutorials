@@ -8,7 +8,7 @@
         <v-btn @click="cursorDB">All data in a glance</v-btn>
         <v-btn @click="updateDB">update data</v-btn>
         <div v-for="(item, i) in icons" :key="i">
-            <v-icon :color="item.colour">mdi-{{item.name}}</v-icon>
+            <v-icon :size="item.size" :color="item.colour">mdi-{{item.name}}</v-icon>
         </div>
     </div>
 </template>
@@ -50,9 +50,7 @@
                     var transaction = db.transaction("icons", "readwrite")
                     const store = transaction.objectStore('icons') // store = table in sql
                     // insert data  in the store
-                    store.add({name: "account", colour: "red" })
-                    store.add({name: "home", colour: "green" })
-                    store.add({name: "basket", colour: "blue" })
+                    store.add({name: "basket", colour: "yellow" })
                     console.log('icons added to the store');
                     transaction.oncomplete = () => {
                         db.close()
@@ -106,23 +104,23 @@
                     let transaction = db.transaction("icons", "readwrite")
                     let store = transaction.objectStore('icons') // store = table in sql
 
-                    let idQuery = store.get(1)
-                    idQuery.onsuccess = () => {
-                        let data = idQuery.result
-                        data.size = "small"
-                        console.log(data);
-                        let updateRequest = store.update(data);
-                        updateRequest.onsuccess = () => {
-                            console.log(updateRequest.result)
-                        }
-                    }
+                    store.openCursor().onsuccess = (event) => {
+                        const cursor = event.target.result;
+                        if (cursor) {
+                            if (cursor.value.name === 'basket') {
+                                const updateData = cursor.value;
+                                
+                                updateData.size = "large";
+                                const request = cursor.update(updateData);
+                                request.onsuccess = () => {
+                                    console.log('Data updated');
+                                };
+                            };
+                            cursor.continue();
 
-                   // close db at the end of transaction
-                    transaction.oncomplete = () => {
-                        db.close()
-                    }
-                    transaction.onerror = event => { // si il y a une erreur dans la requete
-                        console.log(event);
+                        } else {
+                            console.log('Entries displayed.');
+                        }
                     };
                 };
             },
