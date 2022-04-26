@@ -1,13 +1,14 @@
 <template>
     <div>
         <h1>VueX store</h1>
-        <p>{{list}}</p>
+        <p>{{list}}</p> {{$store.state.authenticated}}
         <p>{{doneTodos}}. The length is {{todoCount}} </p>
         <p>{{getTodoById('123456')}}</p>
         <v-text-field label="name fruit" v-model="item"></v-text-field>
         <v-btn @click="addItem">add</v-btn>
         <v-btn @click="addItemByPromise">add Promise</v-btn>
         <v-text-field label="rename" v-model="newName"></v-text-field>
+        <v-btn @click="blockFetch">block route fetch</v-btn>
     </div>
 </template>
 
@@ -41,13 +42,17 @@ import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
         methods: {
             ...mapMutations([
                 'ADD_TO_LIST',
-                'CHANGE_NAME'
+                'CHANGE_NAME',
+                'BLOCK_FECTH'
             ]),
             ...mapActions([
                 'AddByAction',
                 'actionA',
                 'actionB',
             ]),
+            blockFetch() {
+                this.$store.commit('BLOCK_FECTH')
+            },
             addItem() {
                 // MUTATION
                 /* this.ADD_TO_LIST({

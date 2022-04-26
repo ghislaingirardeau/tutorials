@@ -21,6 +21,7 @@
 import ArticleCardBlock from "@/components/ArticleCardBlock";
 
 export default {
+  middleware: 'route-guard',
   components: {
     ArticleCardBlock,
   },

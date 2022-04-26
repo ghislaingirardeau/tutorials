@@ -22,7 +22,8 @@ export const state = () => ({
             name: 'tomate',
             category: 'legume'
         }
-    ]
+    ],
+    authenticated: true
 })
 
 // contains your actions
@@ -52,7 +53,10 @@ export const mutations = {
     },
     CHANGE_NAME(state, value = "Ananas") {
         state.list[0].name = value
-    }
+    },
+    BLOCK_FECTH(state) {
+        state.authenticated = !state.authenticated
+    },
 }
 // your root getters = if I want to compute the state and send the result already
 // ex: if i want a list from a specify id
