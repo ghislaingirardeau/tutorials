@@ -1,9 +1,11 @@
 <template>
   <div>
-    <h1>Welcome tutorial</h1>
+    <h1>Welcome tutorial</h1> 
     <h2>{{ testfullname }}  {{revealMixinData}} </h2>
     <v-btn @click="revealMixinFct">change mixin value</v-btn>
     <v-btn v-focus>test directive</v-btn>
+    <h2>my store: {{this.$store.state.list}}</h2>
+    
   </div>
 </template>
 
@@ -19,6 +21,7 @@ export default {
       }
     }
   },
+  
   mounted() {
     console.log(process.env.TEST);
   },

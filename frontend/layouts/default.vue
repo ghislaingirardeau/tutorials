@@ -87,6 +87,11 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
+          title: 'store',
+          to: '/store'
+        },
+        {
+          icon: 'mdi-chart-bubble',
           title: 'fetch nuxt',
           to: '/fetch'
         }
