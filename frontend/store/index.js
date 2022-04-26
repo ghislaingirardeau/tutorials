@@ -27,12 +27,13 @@ export const state = () => ({
 
 // contains your actions
 export const actions = {
-    AddByAction(context, item) {//item from the methods arguments
-        console.log(context.getters, context.state); // acces to the state and getters here
+    async AddByAction(context, item) {//item from the methods arguments
+        /* console.log(context.getters, context.state); */ // acces to the state and getters here
         context.commit('ADD_TO_LIST', item)
     },
     // WITH A PROMISE, to know in the methods when the action is done
-    actionA({ commit }, item) { 
+    actionA({ commit, state, getters }, item) { 
+        /* console.log(state, getters); */
         return new Promise((resolve, reject) => {
             commit('ADD_TO_LIST', item)
             resolve()
@@ -40,7 +41,7 @@ export const actions = {
     },
     actionB({ dispatch, commit }, item) {
         return dispatch('actionA', item).then(() => { // wait actionA is RESOLVE to do action B
-            commit('CHANGE_NAME', value)
+            commit('CHANGE_NAME')
         })
     },
 }
