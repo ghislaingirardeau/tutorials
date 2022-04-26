@@ -82,6 +82,11 @@ export default {
         },
         {
           icon: 'mdi-chart-bubble',
+          title: 'firebase',
+          to: '/firebase'
+        },
+        {
+          icon: 'mdi-chart-bubble',
           title: 'fetch nuxt',
           to: '/fetch'
         }

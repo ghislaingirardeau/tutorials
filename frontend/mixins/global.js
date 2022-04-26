@@ -9,7 +9,7 @@ export default {
     computed: {
         testfullname() {
             return `My fullname is ${this.testname} ${this.testlast}`
-        }
+        },
     },
     methods: {
         revealMixinFct() {
