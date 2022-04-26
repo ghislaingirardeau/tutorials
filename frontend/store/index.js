@@ -39,8 +39,8 @@ export const actions = {
             resolve()
         })
     },
-    actionB({ dispatch, commit }, item) {
-        return dispatch('actionA', item).then(() => { // wait actionA is RESOLVE to do action B
+    async actionB({ dispatch, commit }, item) {
+        await dispatch('actionA', item).then(() => { // wait actionA is RESOLVE to do action B
             commit('CHANGE_NAME')
         })
     },
