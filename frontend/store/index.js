@@ -27,7 +27,7 @@ export const state = () => ({
 
 // contains your actions
 export const actions = {
-    async AddByAction(context, item) {//item from the methods arguments
+    AddByAction(context, item) {//item from the methods arguments
         /* console.log(context.getters, context.state); */ // acces to the state and getters here
         context.commit('ADD_TO_LIST', item)
     },
