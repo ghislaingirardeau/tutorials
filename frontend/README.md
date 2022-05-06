@@ -1,4 +1,7 @@
 # tutos
+auth: {
+  persistence: 'local', // default
+}
 
 ## Build Setup
 

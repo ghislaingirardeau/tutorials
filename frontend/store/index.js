@@ -1,6 +1,7 @@
 
 // holds your root state
 export const state = () => ({
+    user: undefined,
     list: [
         {
             id: '123',
@@ -45,6 +46,33 @@ export const actions = {
             commit('CHANGE_NAME')
         })
     },
+    // FIREBASE PAGE
+    async currentUser(context, formData) {
+        try {
+            let userLog = await this.$fire.auth.signInWithEmailAndPassword(
+                formData.email,
+                formData.password
+            );
+            // LISTENER TO THE AUTH CHANGED IF STILL LOG OR NOT
+            this.$fire.auth.onAuthStateChanged((user) => {
+                if (user) {
+                    const uid = user.uid;
+                    console.log(user, uid);
+                } else {
+                    console.log("User is signed out");
+                }
+            });
+            // this.$fire.auth.currentUser; => to know if user currently connected
+            console.log(
+                "Login success",
+                "add the redirect log page when log",
+                userLog.user
+            );
+            context.commit('USER_FECTH', userLog.user)
+        } catch (e) {
+            console.log("This email or password doesn't exist");
+        }
+    },
 }
 // contains your mutations
 export const mutations = {
@@ -56,6 +84,11 @@ export const mutations = {
     },
     BLOCK_FECTH(state) {
         state.authenticated = !state.authenticated
+    },
+    // FIREBASE PAGE
+    USER_FECTH(state, authUser) {
+        const { uid, email, emailVerified } = authUser
+        state.user = { uid, email, emailVerified }
     },
 }
 // your root getters = if I want to compute the state and send the result already
