@@ -47,7 +47,7 @@
       </v-menu>
     </v-col>
     <v-col cols="6">
-      <h2>recap du pret</h2>
+      <h2>Recap du pret</h2>
       <v-select
         v-model="periodicity"
         :items="items"
@@ -69,57 +69,68 @@
         }}
       </p>
       <p>total du pret: {{ totalLoan }}</p>
+      <v-text-field
+        v-model="income"
+        label="My expected income / year"
+        required
+      ></v-text-field>
+      <p v-if="income > 0" :class="{'advice-green': adviceMessage.response, 'advice-red': !adviceMessage.response}">{{adviceMessage.message}}</p>
     </v-col>
-    <v-simple-table
-      v-if="loan.amount != null && loan.rate != null && loan.year != null"
-    >
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left">Date</th>
-            <th class="text-left">Depart</th>
-            <th class="text-left">Capital</th>
-            <th class="text-left">interest</th>
-            <th class="text-left">Final</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, i) in amortissement" :key="i">
-            <td>
-              {{ item.date }}
-            </td>
-            <td>
-              {{
-                currency === "Dollars"
-                  ? parseFloat(item.loanBegin).toFixed(2)
-                  : parseInt(item.loanBegin)
-              }}
-            </td>
-            <td>
-              {{
-                currency === "Dollars"
-                  ? item.capital.toFixed(2)
-                  : parseInt(item.capital)
-              }}
-            </td>
-            <td>
-              {{
-                currency === "Dollars"
-                  ? item.interest.toFixed(2)
-                  : parseInt(item.interest)
-              }}
-            </td>
-            <td>
-              {{
-                currency === "Dollars"
-                  ? item.loanFinal.toFixed(2)
-                  : parseInt(item.loanFinal)
-              }}
-            </td>
-          </tr>
-        </tbody>
-      </template>
-    </v-simple-table>
+    <v-col cols="12">
+      <h2>My amortizable table</h2>
+      <v-simple-table
+        v-if="loan.amount != null && loan.rate != null && loan.year != null"
+        fixed-header
+        height="300px"
+      >
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-left">Date</th>
+              <th class="text-left">Depart</th>
+              <th class="text-left">Capital</th>
+              <th class="text-left">interest</th>
+              <th class="text-left">Final</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, i) in amortissement" :key="i">
+              <td>
+                {{ item.date }}
+              </td>
+              <td>
+                {{
+                  currency === "Dollars"
+                    ? parseFloat(item.loanBegin).toFixed(2)
+                    : parseInt(item.loanBegin)
+                }}
+              </td>
+              <td>
+                {{
+                  currency === "Dollars"
+                    ? item.capital.toFixed(2)
+                    : parseInt(item.capital)
+                }}
+              </td>
+              <td>
+                {{
+                  currency === "Dollars"
+                    ? item.interest.toFixed(2)
+                    : parseInt(item.interest)
+                }}
+              </td>
+              <td>
+                {{
+                  currency === "Dollars"
+                    ? item.loanFinal.toFixed(2)
+                    : parseInt(item.loanFinal)
+                }}
+              </td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
+    </v-col>
   </v-row>
 </template>
 
@@ -142,6 +153,7 @@ export default {
         { state: "Yearly", value: 1 },
       ],
       interestTotal: 0,
+      income: 0
     };
   },
   computed: {
@@ -189,10 +201,31 @@ export default {
       let total = parseFloat(this.loan.amount) + parseFloat(this.interestTotal);
       return this.currency === "Dollars" ? total.toFixed(2) : parseInt(total);
     },
+    adviceMessage() {
+      let result = this.mensualite*12 / this.income * 100
+      if (result < 50) {
+        return {
+          message: 'Your loan is good balance',
+          response: true
+        }
+      } else {
+        return {
+          message: 'Your loan is dangerous',
+          response: false
+        }
+      }
+      
+    }
   },
   methods: {},
 };
 </script>
 
 <style lang="scss" scoped>
+.advice-green{
+  color: green;
+}
+.advice-red{
+  color: red;
+}
 </style>
