@@ -25,12 +25,62 @@
         return-object
         single-line
       ></v-select>
+      <v-menu
+        ref="menu"
+        v-model="menu"
+        :close-on-content-click="false"
+        :return-value.sync="date"
+        transition="scale-transition"
+        offset-y
+        max-width="290px"
+        min-width="auto"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-text-field
+            v-model="date"
+            label="Date Loan Start"
+            prepend-icon="mdi-calendar"
+            readonly
+            v-bind="attrs"
+            v-on="on"
+          ></v-text-field>
+        </template>
+        <v-date-picker
+          v-model="date"
+          type="month"
+          no-title
+          scrollable
+        >
+          <v-spacer></v-spacer>
+          <v-btn
+            text
+            color="primary"
+            @click="menu = false"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="$refs.menu.save(date)"
+          >
+            OK
+          </v-btn>
+        </v-date-picker>
+      </v-menu>
     </v-col>
     <v-col cols="6">
       <h2>recap du pret</h2>
       <p>Nombre de paiement : {{ loan.year * periodicity.value }}</p>
       <p>montant echeance: {{ mensualite }}</p>
-      <p>interest total: {{ interestTotal.toFixed(2) }}</p>
+      <p>
+        interest total:
+        {{
+          currency === "Dollars"
+            ? interestTotal.toFixed(2)
+            : parseInt(interestTotal)
+        }}
+      </p>
       <p>total du pret: {{ totalLoan }}</p>
     </v-col>
     <v-simple-table
@@ -39,6 +89,7 @@
       <template v-slot:default>
         <thead>
           <tr>
+            <th class="text-left">Date</th>
             <th class="text-left">Depart</th>
             <th class="text-left">Capital</th>
             <th class="text-left">interest</th>
@@ -47,10 +98,39 @@
         </thead>
         <tbody>
           <tr v-for="(item, i) in amortissement" :key="i">
-            <td>{{ item.loanBegin }}</td>
-            <td>{{ item.capital }}</td>
-            <td>{{ item.interest }}</td>
-            <td>{{ item.loanFinal }}</td>
+            <td>
+              {{
+                item.date
+              }}
+            </td>
+            <td>
+              {{
+                currency === "Dollars"
+                  ? parseFloat(item.loanBegin).toFixed(2)
+                  : parseInt(item.loanBegin)
+              }}
+            </td>
+            <td>
+              {{
+                currency === "Dollars"
+                  ? item.capital.toFixed(2)
+                  : parseInt(item.capital)
+              }}
+            </td>
+            <td>
+              {{
+                currency === "Dollars"
+                  ? item.interest.toFixed(2)
+                  : parseInt(item.interest)
+              }}
+            </td>
+            <td>
+              {{
+                currency === "Dollars"
+                  ? item.loanFinal.toFixed(2)
+                  : parseInt(item.loanFinal)
+              }}
+            </td>
           </tr>
         </tbody>
       </template>
@@ -62,12 +142,14 @@
 export default {
   data() {
     return {
-        currencyList: ['Riels', 'Dollars'],
-        currency: 'Dollars',
+      currencyList: ["Riels", "Dollars"],
+      currency: "Dollars",
+      date: new Date().toISOString().substr(0, 7),
+      menu: false,
       loan: {
-        amount: null,
-        rate: null,
-        year: null,
+        amount: 10000,
+        rate: 5.5,
+        year: 2,
       },
       periodicity: { state: "Monthly", value: 12 },
       items: [
@@ -85,47 +167,61 @@ export default {
         (this.loan.amount * (this.loan.rate / 100)) /
         12 /
         (1 - (1 + this.loan.rate / 100 / 12) ** (-12 * this.loan.year));
-      return parseInt(calcul);
+      return this.currency === "Dollars"
+        ? parseFloat(calcul).toFixed(2)
+        : parseInt(calcul);
     },
     amortissement() {
       let years = new Array(this.loan.year * 12);
       this.interestTotal = 0;
-      for (let index = 0; index < years.length; index++) {
-        const amortTable = (amountMonthly) => {
-          years[index] = {
-            loanBegin: this.moneyConvert(amountMonthly),
-            capital: this.moneyConvert(this.mensualite - ((this.loan.rate / 12) * amountMonthly) / 100),
-              
-            interest: this.moneyConvert(((this.loan.rate / 12) * amountMonthly) / 100),
-            loanFinal: this.moneyConvert(amountMonthly -
-              (this.mensualite - ((this.loan.rate / 12) * amountMonthly) / 100)),
+      const amortTable = (i, amountMonthly, dateParams) => {
+          years[i] = {
+            date: dateParams.toISOString().substr(0, 7),
+            loanBegin: amountMonthly,
+            capital:
+              this.mensualite - ((this.loan.rate / 12) * amountMonthly) / 100,
+
+            interest: ((this.loan.rate / 12) * amountMonthly) / 100,
+            loanFinal:
+              amountMonthly -
+              (this.mensualite - ((this.loan.rate / 12) * amountMonthly) / 100),
           };
-        };
+      };
+      for (let index = 0; index < years.length; index++) {
+        let today = new Date(this.date);
+        today.setMonth(today.getMonth() + index)
+        /* const amortTable = (amountMonthly, dateParams) => {
+          years[index] = {
+            date: today.toISOString().substr(0, 7),
+            loanBegin: amountMonthly,
+            capital:
+              this.mensualite - ((this.loan.rate / 12) * amountMonthly) / 100,
+
+            interest: ((this.loan.rate / 12) * amountMonthly) / 100,
+            loanFinal:
+              amountMonthly -
+              (this.mensualite - ((this.loan.rate / 12) * amountMonthly) / 100),
+          };
+        }; */
         if (index === 0) {
-          amortTable(this.loan.amount);
+          amortTable(index, this.loan.amount, today);
         } else {
           let solde = years[index - 1].loanFinal;
-          amortTable(solde);
+          amortTable(index, solde, today);
         }
         this.interestTotal =
           this.interestTotal + parseFloat(years[index].interest);
       }
+      console.log(years);
       return years;
     },
     totalLoan() {
-      let total = parseInt(this.loan.amount) + parseInt(this.interestTotal);
-      return total;
+      
+      let total = parseFloat(this.loan.amount) + parseFloat(this.interestTotal);
+      return this.currency === "Dollars" ? total.toFixed(2) : parseInt(total);
     },
   },
-  methods: {
-      moneyConvert(a) {
-          if (this.currency === 'Dollars') {
-              return parseFloat(a).toFixed(2)
-          } else {
-              return parseInt(a)
-          }
-      }
-  },
+  methods: {},
 };
 </script>
 
