@@ -12,12 +12,21 @@
         v-model="loan.amount"
         label="Loan amount"
         :prefix="currency === 'Dollars' ? '$' : '៛'"
+        id="loanAmountInput"
+      ></v-text-field>
+      <v-text-field
+        v-model="loan.rate"
+        label="Rate"
+        suffix="%"
         required
       ></v-text-field>
-      <v-text-field v-model="loan.rate" label="Rate" suffix="%" required></v-text-field>
-      <v-text-field v-model="loan.year" label="Year" type="number" required></v-text-field>
-      <v-text-field required v-model="loan.amount" label="Loan amount" id="testInput" :prefix="currency === 'Dollars' ? '$' : '៛'"></v-text-field>
-      
+      <v-text-field
+        v-model="loan.year"
+        label="Year"
+        type="number"
+        required
+      ></v-text-field>
+
       <v-menu
         ref="menu"
         v-model="menu"
@@ -60,22 +69,38 @@
       ></v-select>
 
       <p>Nombre de paiement : {{ loan.year * periodicity.value }}</p>
-      <p>Amount {{periodicity.state}}: {{ periodicity.value === 12 ? mensualite : (mensualite*12).toFixed(2) }}</p>
+      <p>
+        Amount {{ periodicity.state }}:
+        {{
+          periodicity.value === 12
+            ? convertNumberInput(parseInt(mensualite).toString())
+            : convertNumberInput(parseInt(mensualite * 12).toString())
+        }}
+        {{ currency === "Dollars" ? " $" : " ៛" }}
+      </p>
       <p>
         interest total:
-        {{
-          currency === "Dollars"
-            ? interestTotal.toFixed(2)
-            : parseInt(interestTotal)
-        }}
+        {{ convertNumberInput(parseInt(interestTotal).toString()) }}
+        {{ currency === "Dollars" ? " $" : " ៛" }}
       </p>
-      <p>total du pret: {{ totalLoan }}</p>
+      <p>
+        total du pret: {{ totalLoan }}
+        {{ currency === "Dollars" ? " $" : " ៛" }}
+      </p>
       <v-text-field
         v-model="income"
         label="My expected income / year"
         required
       ></v-text-field>
-      <p v-if="income > 0" :class="{'advice-green': adviceMessage.response, 'advice-red': !adviceMessage.response}">{{adviceMessage.message}}</p>
+      <p
+        v-if="income > 0"
+        :class="{
+          'advice-green': adviceMessage.response,
+          'advice-red': !adviceMessage.response,
+        }"
+      >
+        {{ adviceMessage.message }}
+      </p>
     </v-col>
     <v-col cols="12">
       <h2>My amortizable table</h2>
@@ -155,19 +180,23 @@ export default {
       ],
       interestTotal: 0,
       income: 0,
-      testAmount: 0
     };
   },
   computed: {
     mensualite() {
       // interet + capital
       let calcul =
-        (this.loan.amount * (this.loan.rate / 100)) /
+        (parseInt(this.loan.amount.toString().replaceAll(" ", "")) *
+          (this.loan.rate / 100)) /
         12 /
         (1 - (1 + this.loan.rate / 100 / 12) ** (-12 * this.loan.year));
-      return this.currency === "Dollars"
-        ? parseFloat(calcul).toFixed(2)
-        : parseInt(calcul);
+      if (calcul) {
+        return this.currency === "Dollars"
+          ? parseFloat(calcul).toFixed(2)
+          : parseInt(calcul);
+      } else {
+        return 0;
+      }
     },
     amortissement() {
       let years = new Array(this.loan.year * 12);
@@ -189,7 +218,8 @@ export default {
         let today = new Date(this.date);
         today.setMonth(today.getMonth() + index);
         if (index === 0) {
-          amortTable(index, this.loan.amount, today);
+          let amount = this.loan.amount.toString().replaceAll(" ", "");
+          amortTable(index, amount, today);
         } else {
           let solde = years[index - 1].loanFinal;
           amortTable(index, solde, today);
@@ -200,55 +230,65 @@ export default {
       return years;
     },
     totalLoan() {
-      let total = parseFloat(this.loan.amount) + parseFloat(this.interestTotal);
-      return this.currency === "Dollars" ? total.toFixed(2) : parseInt(total);
+      let total =
+        parseInt(this.loan.amount.toString().replaceAll(" ", "")) +
+        parseFloat(this.interestTotal);
+      let totalFormated = this.convertNumberInput(parseInt(total).toString());
+      if (totalFormated != "NaN") {
+        return totalFormated;
+      } else {
+        return 0;
+      }
     },
     adviceMessage() {
-      let result = this.mensualite*12 / this.income * 100
+      let result = ((this.mensualite * 12) / this.income) * 100;
       if (result < 50) {
         return {
-          message: 'Your loan is good balance',
-          response: true
-        }
+          message: "Your loan is good balance",
+          response: true,
+        };
       } else {
         return {
-          message: 'Your loan is dangerous',
-          response: false
-        }
+          message: "Your loan is dangerous",
+          response: false,
+        };
       }
-      
-    }
+    },
   },
   methods: {
+    convertNumberInput(value) {
+      if (value.length > 3 && value.length < 7) {
+        let a = value.slice(-3);
+        let b = value.slice(0, -3);
+        return b.concat(" ", a);
+      } else if (value.length > 6) {
+        let a = value.slice(-3);
+        let b = value.slice(0, -6);
+        let c = value.slice(-6, -3);
+        return b.concat(" ", c, " ", a);
+      } else {
+        return value;
+      }
+    },
   },
-  mounted () {
-    const test = document.getElementById('testInput')
-    test.addEventListener('focusin', (event) => {
-      this.testAmount = this.testAmount.toString().replaceAll(' ', '')
+  mounted() {
+    const loanValue = document.getElementById("loanAmountInput");
+    loanValue.addEventListener("focusin", (event) => {
+      this.loan.amount = this.loan.amount.toString().replaceAll(" ", "");
     });
 
-    test.addEventListener('focusout', (e) => {
-      e.target.value.replaceAll(' ', '')
-      if (e.target.value.length > 3 && e.target.value.length < 7) {
-        let a = e.target.value.slice(-3)
-        let b = e.target.value.slice(0, -3)
-        this.testAmount = b.concat(' ', a)
-      } else if (e.target.value.length > 6) {
-        let a = e.target.value.slice(-3)
-        let b = e.target.value.slice(0, -6)
-        let c = e.target.value.slice(-6, -3)
-        this.testAmount = b.concat(' ', c, ' ', a)
-      }
+    loanValue.addEventListener("focusout", (e) => {
+      this.loan.amount = this.convertNumberInput(e.target.value);
     });
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.advice-green{
+.advice-green {
   color: green;
 }
-.advice-red{
+.advice-red {
   color: red;
 }
 </style>
