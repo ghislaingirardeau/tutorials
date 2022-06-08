@@ -8,15 +8,16 @@
         label="currency"
         single-line
       ></v-select>
-
       <v-text-field
         v-model="loan.amount"
         label="Loan amount"
-        :prefix="currency === 'Dollars' ? '$' : 'R'"
+        :prefix="currency === 'Dollars' ? '$' : '៛'"
         required
       ></v-text-field>
       <v-text-field v-model="loan.rate" label="Rate" suffix="%" required></v-text-field>
       <v-text-field v-model="loan.year" label="Year" type="number" required></v-text-field>
+      <v-text-field required v-model="loan.amount" label="Loan amount" id="testInput" :prefix="currency === 'Dollars' ? '$' : '៛'"></v-text-field>
+      
       <v-menu
         ref="menu"
         v-model="menu"
@@ -153,7 +154,8 @@ export default {
         { state: "Yearly", value: 1 },
       ],
       interestTotal: 0,
-      income: 0
+      income: 0,
+      testAmount: 0
     };
   },
   computed: {
@@ -217,7 +219,28 @@ export default {
       
     }
   },
-  methods: {},
+  methods: {
+  },
+  mounted () {
+    const test = document.getElementById('testInput')
+    test.addEventListener('focusin', (event) => {
+      this.testAmount = this.testAmount.toString().replaceAll(' ', '')
+    });
+
+    test.addEventListener('focusout', (e) => {
+      e.target.value.replaceAll(' ', '')
+      if (e.target.value.length > 3 && e.target.value.length < 7) {
+        let a = e.target.value.slice(-3)
+        let b = e.target.value.slice(0, -3)
+        this.testAmount = b.concat(' ', a)
+      } else if (e.target.value.length > 6) {
+        let a = e.target.value.slice(-3)
+        let b = e.target.value.slice(0, -6)
+        let c = e.target.value.slice(-6, -3)
+        this.testAmount = b.concat(' ', c, ' ', a)
+      }
+    });
+  },
 };
 </script>
 
